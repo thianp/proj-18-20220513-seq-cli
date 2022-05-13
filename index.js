@@ -1,7 +1,7 @@
 // const db = require('./models') //การimportตัวนี้มันจะ connnect ข้อมูลใน database อัตโนมัติ
 
 //destructuringจากข้างบน
-const { sequelize, User, Todo } = require("./models");
+// const { sequelize, User, Todo } = require("./models");
 
 // sequelize.sync({ force: true });
 

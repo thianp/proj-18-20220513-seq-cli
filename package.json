@@ -5,14 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js",
-    "drop_db": "sequelize db:drop", 
+    "start": "nodemon app.js",
+    "drop_db": "sequelize db:drop",
     "create_db": "sequelize db:create"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.18.1",
     "mysql2": "^2.3.3",
     "sequelize": "^6.19.0"
   }
