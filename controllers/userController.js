@@ -1,5 +1,6 @@
 const createError = require("../utils/createError");
 const { User } = require("../models");
+const bcrypt = require("bcryptjs");
 
 exports.register = async (req, res, next) => {
   try {
@@ -10,9 +11,49 @@ exports.register = async (req, res, next) => {
       // return res.status(400).json({ message: 'password did\'nt match' })
     }
 
+    if (!password) {
+      createError("password is required", 400);
+    }
+
+    if (password.length < 6) {
+      createError("password must be at least 6 cahracters", 400);
+    }
+
+    // Hash password
+    const hashed = await bcrypt.hash(password, 10);
+
     // Create new user
-    await User.create({ username, email, password });
+    // await User.create({ username, email, password });
+    await User.create({ username, email, password: hashed });
     res.status(201).json({ message: "register success" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.login = async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+    if (!password) {
+      createError("password is required", 400);
+    }
+
+    const user = await User.findOne({
+      where: {
+        username,
+      },
+    });
+
+    if (!user) {
+      createError("invalid username or password", 400);
+    }
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      createError("invalid username or password", 400);
+    } else {
+      res.status(201).json({ message: "login success" });
+    }
   } catch (err) {
     next(err);
   }
@@ -29,7 +70,6 @@ exports.updateUser = async (req, res, next) => {
     if (!user) {
       createError("user not found", 400);
     }
-
     if (oldPassword !== user.password) {
       createError("incorrect password", 400);
     }

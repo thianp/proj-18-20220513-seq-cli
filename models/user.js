@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notEmpty: true,
-          len: [6, 12],
+          // len: [6, 12], // commented so db would accept hashed password
         },
       },
       birth_date: DataTypes.DATEONLY,
