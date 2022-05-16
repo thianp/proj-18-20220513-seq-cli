@@ -1,6 +1,7 @@
 const createError = require("../utils/createError");
 const { User } = require("../models");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res, next) => {
   try {
@@ -52,7 +53,19 @@ exports.login = async (req, res, next) => {
     if (!isPasswordMatch) {
       createError("invalid username or password", 400);
     } else {
-      res.status(201).json({ message: "login success" });
+      // Create JWT
+      const payload = {
+        id: user.id,
+        username,
+        email: user.email,
+      };
+      const secretKey = "1q2w3e";
+      const token = jwt.sign(payload, secretKey, {
+        algorithm: "HS512",
+        expiresIn: '30d',
+      });
+
+      res.status(201).json({ message: "login success", token });
     }
   } catch (err) {
     next(err);
